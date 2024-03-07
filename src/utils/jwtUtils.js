@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+require('dotenv').config()
 const generateToken = (userId) => {
   const secret = process.env.JWT_SECRET ;
   const token = jwt.sign({ userId }, secret, { expiresIn: '1h' });
@@ -7,11 +7,15 @@ const generateToken = (userId) => {
 };
 
 const verifyToken = (token) => {
-  const secret = process.env.JWT_SECRET ;
+  // console.log("JWT Secret:", process.env.JWT_SECRET);
+
+  const secret = process.env.JWT_SECRET;
+
   try {
-    const decoded = jwt.verify(token, secret);
+    const decoded = jwt.verify(token.toString(), secret);
     return decoded;
   } catch (error) {
+    console.error('Error verifying token:', error.message);
     throw new Error('Invalid token');
   }
 };

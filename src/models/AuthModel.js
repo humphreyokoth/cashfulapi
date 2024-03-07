@@ -16,18 +16,19 @@ class AuthModel {
   }
 
   async getUserByUsername(username) {
-    const query = `
-      SELECT id, username
-      FROM users
-      WHERE username = '${username}'`;
+  const query = `
+    SELECT id, username, password
+    FROM users
+    WHERE username = '${username}'`;
 
-    try {
-      const { rows } = await pool.query(query);
-      return rows[0];
-    } catch (err) {
-      console.error("Error finding user:", err);
-      throw err;
-    }
+  try {
+    const { rows } = await pool.query(query);
+    return rows[0];
+  } catch (err) {
+    console.error("Error finding user:", err);
+    throw err;
   }
+}
+
 }
 module.exports = new AuthModel();

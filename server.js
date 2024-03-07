@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwtAuth = require('./src/config/jwtAuth');
+require('dotenv').config()
 
 // Routes
 const authRoutes = require('./src/routes/authRoutes');
@@ -21,7 +22,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.use('/api/users', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/payment-links', jwtAuth.authenticateToken, paymentLinkRoutes);
 app.use('/api/payments', jwtAuth.authenticateToken, paymentRoutes);
 app.use('/api/accounts', jwtAuth.authenticateToken, accountRoutes);

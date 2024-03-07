@@ -1,14 +1,18 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { create, getUserByUsername } = require('../models/AuthModel');
-const { generateToken } = require('../utils/jwtUtils');
+const bcrypt = require("bcrypt");
+
+const jwt = require("jsonwebtoken");
+const { create, getUserByUsername } = require("../models/AuthModel");
+const { generateToken ,verifyToken} = require("../utils/jwtUtils");
 
 const register = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    console.log("Password:", password);
+    const saltRounds = 6;
+    const salt = await bcrypt.genSalt(saltRounds);
+    console.log("Salt:", salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = await create(username, hashedPassword);
     const token = generateToken(user.id);
@@ -18,21 +22,22 @@ const register = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { username,password } = req.body;
 
   try {
     const user = await getUserByUsername(username);
+    console.log("user:", user);
+    console.log("User Password:", user.password);
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid username or password' });
+      return res.status(401).json({ error: "Invalid username or password" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid username or password' });
+      return res.status(401).json({ error: "Invalid username or password" });
     }
 
     const token = generateToken(user.id);
