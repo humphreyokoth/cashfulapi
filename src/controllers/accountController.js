@@ -10,17 +10,35 @@
 //   }
 // };
 
+const Account = require("../models/AccountModel");
+const {
+  createAccount,
+  getAccountByUsername,
+} = require("../models/AccountModel");
 
-const { getAccountByUsername } = require('../models/AccountModel');
-
+createUserAccount = async (req, res) => {
+  const { userId, accountName, accountNumber, accountBalance } = req.body;
+  try {
+    // const { userId, accountName, accountNumber, accountBalance } = req.body;
+    const newAccount = await createAccount(
+      userId,
+      accountName,
+      accountNumber,
+      accountBalance
+    );
+    res.status(201).json(newAccount);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 const getAccountData = async (req, res) => {
-  const { username } = req.params;
+  const { userId } = req.params;
 
   try {
-    const account = await getAccountByUsername(username);
+    const account = await getAccountByUsername(userId);
 
     if (!account) {
-      return res.status(404).json({ error: 'Account not found' });
+      return res.status(404).json({ error: "Account not found" });
     }
 
     res.json(account);
@@ -29,6 +47,8 @@ const getAccountData = async (req, res) => {
   }
 };
 
+
 module.exports = {
+  createUserAccount,
   getAccountData,
 };
