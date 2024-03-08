@@ -16,7 +16,7 @@ const app = express();
 
 // Middleware
 var corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'https://cashfulweb.vercel.app/login',
 };
 
 app.use(cors(corsOptions));
