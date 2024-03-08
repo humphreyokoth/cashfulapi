@@ -1,35 +1,31 @@
-const pool = require("../config/db");
-const { v4: uuidv4 } = require("uuid");
+const supabase = require('../config/supabaseClient');
+const { generateUniqueLink } = require('../utils/generateUniqueLink');
 
-class PaymentLinkModel {
-  async create(userId) {
-    const uniqueLink = uuidv4();
-    const query = `
-        INSERT INTO payment_links (user_id, unique_link)
-        VALUES ('${userId}', '${uniqueLink}')`;
+const createPaymentLink = async (userId, accountId) => {
+  const uniqueLink = generateUniqueLink();
 
-    try {
-      await pool.query(query);
-      return "Payment link created successfully";
-    } catch (err) {
-      console.error("Error creating payment link:", err);
-      throw err;
-    }
+  const { data, error } = await supabase
+    .from('payment_links')
+    .insert([{ user_id: userId, account_id: accountId, unique_link: uniqueLink }]);
+
+  if (error) {
+    throw new Error(error.message);
   }
-  async findByUserId(userId) {
-    const query = `
-      SELECT id, user_id, unique_link
-      FROM payment_links
-      WHERE user_id = '${userId}'`;
 
-    try {
-      const { rows } = await pool.query(query);
-      return rows[0];
-    } catch (err) {
-      console.error("Error finding payment link:", err);
-      throw err;
-    }
+  return data[0];
+};
+
+const getPaymentLinkByUserId = async (userId) => {
+  const { data, error } = await supabase
+    .from('payment_links')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(error.message);
   }
-}
 
-module.exports = new PaymentLinkModel();
+  return data;
+};
+
+module.exports = { createPaymentLink, getPaymentLinkByUserId };

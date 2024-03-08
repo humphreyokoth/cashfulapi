@@ -1,15 +1,15 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const generateToken = (userId) => {
-  const secret = process.env.JWT_SECRET ;
+  const secret = process.env.SUPABASE_KEY ;
   const token = jwt.sign({ userId }, secret, { expiresIn: '1h' });
   return token;
 };
 
 const verifyToken = (token) => {
-  // console.log("JWT Secret:", process.env.JWT_SECRET);
+  console.log("JWT Secret:", process.env.JWT_SECRET);
 
-  const secret = process.env.JWT_SECRET;
+  const secret = process.env.SUPABASE_KEY;
 
   try {
     const decoded = jwt.verify(token.toString(), secret);

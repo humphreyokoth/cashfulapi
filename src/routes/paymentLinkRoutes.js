@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const paymentLinkController = require('../controllers/paymentLinkController');
+const { generatePaymentLink, getPaymentLinkByUserIdController } = require('../controllers/paymentLinkController');
 
-router.post('/generate', paymentLinkController.generateUniqueLink);
-router.get('/:userId', paymentLinkController.getPaymentLinkByUserId);
+module.exports = (supabase) => {
+  router.post('/generate', (req, res) => generatePaymentLink(req, res, supabase));
+  router.get('/:userId', (req, res) => getPaymentLinkByUserIdController(req, res, supabase));
 
-module.exports = router;
+  return router;
+};

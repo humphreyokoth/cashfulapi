@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const accountController = require('../controllers/accountController');
+const { createUserAccount, getAccountData } = require('../controllers/accountController');
 
+module.exports = (supabase) => {
+  router.post('/create', (req, res) => createUserAccount(req, res, supabase));
+  router.get('/:userId', (req, res) => getAccountData(req, res, supabase));
 
-router.post('/create-account', accountController.createUserAccount);
-router.get('/:userId', accountController.getAccountData);
-
-module.exports = router;
+  return router;
+};
