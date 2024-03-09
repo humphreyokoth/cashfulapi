@@ -16,6 +16,6 @@ require('dotenv').config();
 import postgres from 'postgres'
 
 const connectionString = process.env.DATABASE_URL
-const pool = postgres(connectionString)
+const sql = postgres(connectionString)
 
-export default pool
+export default sql
